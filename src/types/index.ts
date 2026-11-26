@@ -50,7 +50,7 @@ export interface AudioPlayerState {
   isPlaying: boolean;
   currentTime: number;
   duration: number;
-  play: () => void;
+  play: (durationLimit?: number) => void;
   stop: () => void;
   loadTrack: (url: string) => void;
   playPreview: () => void;    // 30 saniyelik tam önizleme
