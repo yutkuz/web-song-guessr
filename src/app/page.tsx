@@ -65,7 +65,7 @@ export default function GamePage() {
         </div>
       )}
       {!gameState.isLoading && gameState.track && (
-        <div className={`w-full mx-auto ${gameState.roundComplete && !isOver ? 'grid max-w-[1080px] gap-8 lg:grid-cols-[680px_360px] lg:justify-center lg:items-start' : 'flex max-w-[680px] justify-center'}`}>
+        <div className="grid w-full max-w-[1080px] mx-auto gap-8 lg:grid-cols-[680px_360px] lg:justify-center lg:items-start">
         <div className="flex w-full min-w-0 flex-col gap-6">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2" aria-label={`${3 - gameState.currentStageIndex} hak kaldı`}>
