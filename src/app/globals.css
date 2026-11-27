@@ -15,6 +15,35 @@ body {
   min-height: 100%;
 }
 
+.progress-range::-webkit-slider-runnable-track {
+  height: 12px;
+  background: transparent;
+}
+
+.progress-range::-moz-range-track {
+  height: 12px;
+  background: transparent;
+}
+
+.progress-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -3px;
+  border: 2px solid #d1fae5;
+  border-radius: 9999px;
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.progress-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #d1fae5;
+  border-radius: 9999px;
+  background: #10b981;
+}
+
 body {
   margin: 0;
   background: var(--background);

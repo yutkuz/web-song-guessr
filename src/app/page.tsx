@@ -57,8 +57,8 @@ export default function GamePage() {
         </div>
       )}
       {!gameState.isLoading && gameState.track && (
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
-        <div className="flex flex-col gap-6">
+        <div className="grid w-full max-w-6xl mx-auto gap-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
+        <div className="flex min-w-0 flex-col gap-6">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2" aria-label={`${3 - gameState.currentStageIndex} hak kaldı`}>
               <span className="text-xs text-neutral-400">Kalan hak:</span>
@@ -84,10 +84,15 @@ export default function GamePage() {
 
           {isOver && <div className="rounded-2xl border border-emerald-500/40 bg-emerald-950/40 p-6 text-center space-y-4"><h2 className="text-xl font-bold text-emerald-300">Tebrikler, 5 şarkıyı tamamladın! 🎉</h2><button onClick={gameState.resetGame} className="w-full rounded-xl bg-emerald-500 py-3 font-semibold text-neutral-950">Yeni Oyun</button></div>}
         </div>
-        {gameState.roundComplete && !isOver && <aside className="rounded-2xl border border-neutral-800 bg-neutral-900 p-5 space-y-4 lg:sticky lg:top-24">
-          <div><p className="text-xs uppercase tracking-wider text-neutral-500">Cevap</p><h2 className="mt-1 text-xl font-bold text-white">{gameState.track.title}</h2><p className="text-neutral-300">{gameState.track.artist}</p></div>
-          <p className="text-sm text-neutral-400">Şarkının 10 saniyelik önizlemesi çalıyor.</p>
-          <button onClick={() => { if (previewTimer.current) clearTimeout(previewTimer.current); audio.stop(); gameState.nextSong(); }} className="w-full rounded-xl bg-emerald-500 py-3 font-semibold text-neutral-950">Sonraki şarkı</button>
+        {gameState.roundComplete && !isOver && <aside className="rounded-2xl border border-neutral-800 bg-neutral-950 p-5 space-y-5 lg:sticky lg:top-24">
+          <div className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900">
+            <div className="aspect-square w-full bg-neutral-800">
+              {gameState.track.albumCover ? <img src={gameState.track.albumCover} alt={`${gameState.track.artist} - ${gameState.track.title}`} className="h-full w-full object-cover" /> : <div className="grid h-full place-items-center text-6xl">🎵</div>}
+            </div>
+            <div className="p-5"><p className="text-xs uppercase tracking-wider text-neutral-500">Cevap</p><h2 className="mt-1 text-2xl font-bold text-white">{gameState.track.title}</h2><p className="mt-1 text-lg text-neutral-300">{gameState.track.artist}</p>{gameState.track.album && <p className="mt-1 text-sm text-neutral-500">{gameState.track.album}</p>}</div>
+          </div>
+          <button onClick={() => audio.isPlaying ? audio.stop() : audio.play(10)} className="w-full rounded-xl bg-emerald-500 py-4 text-lg font-semibold text-neutral-950">{audio.isPlaying ? 'Durdur' : '▶ Önizlemeyi oynat'}</button>
+          <button onClick={() => { if (previewTimer.current) clearTimeout(previewTimer.current); audio.stop(); gameState.nextSong(); }} className="w-full rounded-xl border border-neutral-700 bg-neutral-800 py-3 font-semibold text-white hover:bg-neutral-700">Sonraki şarkı</button>
         </aside>}
         </div>
       )}

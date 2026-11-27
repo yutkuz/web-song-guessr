@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="tr">
       <body className="bg-neutral-950 text-neutral-100 min-h-screen flex flex-col antialiased">
         <Header />
-        <main className="max-w-5xl w-full mx-auto px-4 py-4 sm:py-6 flex-1 flex flex-col">
+        <main className="max-w-6xl w-full mx-auto px-4 py-4 sm:py-6 flex-1 flex flex-col">
           {children}
         </main>
       </body>
