@@ -56,7 +56,8 @@ export default function GamePage() {
 
   return (
     <div className="relative w-full flex-1 flex flex-col gap-6 py-4 select-none">
-      {gameState.feedback && <div className={`fixed inset-0 z-50 pointer-events-none ${gameState.feedback === 'correct' ? 'bg-emerald-400/30' : 'bg-rose-400/30'} animate-pulse`} aria-hidden="true" />}
+      <h1 className="sr-only">Şarkıyı Tahmin Et</h1>
+      {gameState.feedback && <div className={`fixed inset-0 z-50 pointer-events-none ${gameState.feedback === 'correct' ? 'bg-emerald-400/30' : 'bg-rose-400/30'} motion-safe:animate-pulse`} aria-hidden="true" />}
       {gameState.isLoading && <div className="flex-1 grid place-items-center text-neutral-400">Şarkı hazırlanıyor...</div>}
       {!gameState.isLoading && gameState.error && !gameState.track && (
         <div role="alert" className="m-auto text-center space-y-4">
@@ -77,10 +78,10 @@ export default function GamePage() {
               </div>
             </div>
             <span className="text-sm font-medium text-neutral-400">Şarkı {gameState.songNumber}/{gameState.totalSongs}</span>
-            <label className="relative flex items-center gap-2 text-neutral-400" aria-label="Ses seviyesi" onClick={revealVolume} onFocus={revealVolume}>
+            <label htmlFor="volume-slider" className="relative flex items-center gap-2 text-neutral-400" onClick={revealVolume} onFocus={revealVolume}>
               {showVolume && <span className="absolute -top-6 right-0 rounded bg-neutral-800 px-1.5 py-0.5 text-[10px] text-neutral-200">{Math.round(volume * 100)}%</span>}
               <span className="text-lg">🔊</span>
-              <input type="range" min="0" max="1" step="0.01" value={volume} onChange={(e) => { changeVolume(Number(e.target.value)); revealVolume(); }} className="w-24 accent-emerald-500" />
+              <input id="volume-slider" type="range" min="0" max="1" step="0.01" value={volume} aria-valuetext={`${Math.round(volume * 100)}%`} onChange={(e) => { changeVolume(Number(e.target.value)); revealVolume(); }} className="w-24 accent-emerald-500" />
             </label>
           </div>
 
@@ -96,7 +97,7 @@ export default function GamePage() {
         {gameState.roundComplete && !isOver && <aside className="rounded-2xl border border-neutral-800 bg-neutral-950 p-5 space-y-5 lg:absolute lg:left-[calc(50%+360px)] lg:top-0 lg:w-[360px]">
           <div className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900">
             <div className="aspect-square w-full bg-neutral-800">
-              {gameState.track.albumCover ? <img src={gameState.track.albumCover} alt={`${gameState.track.artist} - ${gameState.track.title}`} className="h-full w-full object-cover" /> : <div className="grid h-full place-items-center text-6xl">🎵</div>}
+              {gameState.track.albumCover ? <img src={gameState.track.albumCover} alt={`${gameState.track.artist} - ${gameState.track.title}`} width={500} height={500} loading="lazy" decoding="async" className="h-full w-full object-cover" /> : <div className="grid h-full place-items-center text-6xl">🎵</div>}
             </div>
             <div className="p-5"><p className="text-xs uppercase tracking-wider text-neutral-500">Cevap</p><h2 className="mt-1 text-2xl font-bold text-white">{gameState.track.title}</h2><p className="mt-1 text-lg text-neutral-300">{gameState.track.artist}</p>{gameState.track.album && <p className="mt-1 text-sm text-neutral-500">{gameState.track.album}</p>}</div>
           </div>

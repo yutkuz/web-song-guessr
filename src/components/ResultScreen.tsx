@@ -113,6 +113,9 @@ export function ResultScreen({
             <img
               src={track.albumCover}
               alt={`${track.artist} - ${track.title}`}
+              width={96}
+              height={96}
+              decoding="async"
               onError={() => setImageError(true)}
               className="w-full h-full object-cover aspect-square"
               loading="lazy"
@@ -172,7 +175,7 @@ export function ResultScreen({
           }
           className={`w-full py-3 px-4 rounded-xl font-semibold text-sm sm:text-base flex items-center justify-center gap-2.5 transition-all duration-200 shadow-md cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 ${
             isPlayingPreview
-              ? 'bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white shadow-amber-950/40 ring-1 ring-amber-400/40 animate-pulse'
+              ? 'bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white shadow-amber-950/40 ring-1 ring-amber-400/40 motion-safe:animate-pulse'
               : 'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white shadow-emerald-950/40 ring-1 ring-emerald-400/40'
           }`}
         >

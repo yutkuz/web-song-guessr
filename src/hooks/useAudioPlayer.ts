@@ -74,7 +74,9 @@ export function useAudioPlayer(
     if (typeof window === 'undefined') return null;
     if (!audioRef.current) {
       const audio = new Audio();
-      audio.preload = 'auto';
+      // The track is not needed until the user presses play. Avoid fetching
+      // remote audio during initial render and preserve bandwidth.
+      audio.preload = 'none';
       audio.volume = volume;
       audioRef.current = audio;
     }
@@ -111,7 +113,6 @@ export function useAudioPlayer(
 
       if (url) {
         audio.src = url;
-        audio.load();
       } else {
         audio.removeAttribute('src');
         audio.load();
@@ -150,6 +151,7 @@ export function useAudioPlayer(
       // Kullanıcı çubuktan bir noktaya sardıysa oradan devam et.
       if (audio.currentTime >= limit || audio.currentTime < 0) audio.currentTime = 0;
       setCurrentTime(audio.currentTime);
+      audio.load();
 
       // requestAnimationFrame döngüsü
       const tick = () => {

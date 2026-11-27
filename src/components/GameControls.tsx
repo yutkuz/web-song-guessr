@@ -67,7 +67,6 @@ export function GameControls({
   return (
     <div
       className="w-full space-y-3 select-none"
-      aria-label="Oyun Kontrolleri"
     >
       {/* 1. Ana Aksiyon: Oynat / Durdur Butonu */}
       <div className="w-full">
@@ -84,7 +83,7 @@ export function GameControls({
             isControlsDisabled
               ? 'bg-neutral-800 text-neutral-500 border border-neutral-700/60 cursor-not-allowed opacity-50 shadow-none'
               : isPlaying
-              ? 'bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white shadow-amber-950/40 ring-1 ring-amber-400/30 animate-pulse'
+              ? 'bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white shadow-amber-950/40 ring-1 ring-amber-400/30 motion-safe:animate-pulse'
               : 'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white shadow-emerald-950/40 ring-1 ring-emerald-400/30'
           }`}
         >
@@ -188,7 +187,7 @@ export function GameControls({
           className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-neutral-900/60 border border-neutral-800 text-xs text-neutral-400"
         >
           <svg
-            className="animate-spin w-3.5 h-3.5 text-emerald-400"
+            className="motion-safe:animate-spin w-3.5 h-3.5 text-emerald-400"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

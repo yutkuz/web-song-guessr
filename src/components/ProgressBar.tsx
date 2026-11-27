@@ -29,10 +29,10 @@ export function ProgressBar({
   };
 
   return (
-    <div className="w-full space-y-2" aria-label="Şarkı ilerlemesi">
+    <div className="w-full space-y-2">
       <div className="flex items-center justify-between text-xs font-mono text-neutral-400">
         <span className="flex items-center gap-1.5">
-          <span className={`h-2 w-2 rounded-full ${isPlaying ? 'bg-emerald-400 animate-pulse' : 'bg-neutral-600'}`} />
+          <span className={`h-2 w-2 rounded-full ${isPlaying ? 'bg-emerald-400 motion-safe:animate-pulse' : 'bg-neutral-600'}`} />
           {safeTime.toFixed(1)}s
         </span>
         <span>10s</span>
@@ -52,7 +52,7 @@ export function ProgressBar({
           value={safeTime}
           onChange={(event) => handleChange(Number(event.target.value))}
           aria-label="Şarkı içinde ilerle"
-          className="progress-range relative z-10 w-full cursor-pointer appearance-none bg-transparent"
+          className="progress-range relative z-10 w-full cursor-pointer appearance-none bg-transparent focus-visible:outline-2 focus-visible:outline-emerald-400 focus-visible:outline-offset-4"
         />
       </div>
 

@@ -28,6 +28,9 @@ function TrackCover({
       <img
         src={coverUrl}
         alt={title}
+        width={40}
+        height={40}
+        decoding="async"
         onError={() => setHasError(true)}
         className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-cover flex-shrink-0 shadow-sm border border-white/10"
         loading="lazy"
@@ -128,7 +131,7 @@ export function GuessHistory({ stages, currentStageIndex }: GuessHistoryProps) {
                     : stage.result === 'skipped'
                     ? 'bg-neutral-800 text-neutral-400 border border-neutral-700'
                     : isCurrentActive
-                    ? 'bg-neutral-800 text-neutral-200 border border-neutral-500 animate-pulse'
+                    ? 'bg-neutral-800 text-neutral-200 border border-neutral-500 motion-safe:animate-pulse'
                     : 'bg-neutral-900/60 text-neutral-700 border border-neutral-800'
                 }`}
                 aria-label={`Aşama ${stage.index + 1} durumu: ${stage.result}`}
@@ -177,7 +180,7 @@ export function GuessHistory({ stages, currentStageIndex }: GuessHistoryProps) {
                 ) : isCurrentActive ? (
                   // Aktif Aşama Nabız Göstergesi
                   <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="motion-safe:animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                   </span>
                 ) : (
@@ -274,7 +277,7 @@ export function GuessHistory({ stages, currentStageIndex }: GuessHistoryProps) {
                 </span>
               ) : isCurrentActive ? (
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-neutral-800 text-neutral-200 border border-neutral-500 shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 motion-safe:animate-pulse" />
                   Aktif
                 </span>
               ) : (

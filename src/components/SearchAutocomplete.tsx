@@ -283,7 +283,7 @@ export function SearchAutocomplete({
               role="status"
             >
               <svg
-                className="animate-spin w-4 h-4"
+                className="motion-safe:animate-spin w-4 h-4"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -336,7 +336,7 @@ export function SearchAutocomplete({
           {isLoading && results.length === 0 && (
             <div className="p-4 flex items-center justify-center gap-2.5 text-neutral-400 text-sm">
               <svg
-                className="animate-spin w-4 h-4 text-emerald-400"
+                className="motion-safe:animate-spin w-4 h-4 text-emerald-400"
                 viewBox="0 0 24 24"
                 fill="none"
               >
@@ -402,6 +402,9 @@ export function SearchAutocomplete({
                         <img
                           src={track.albumCover}
                           alt={`${track.artist} - ${track.title}`}
+                          width={40}
+                          height={40}
+                          decoding="async"
                           className="w-full h-full object-cover"
                           onError={() => handleImageError(track.id)}
                           loading="lazy"
