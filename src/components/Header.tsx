@@ -5,7 +5,7 @@ import { useDesignMode } from '@/components/DesignProvider';
 
 export default function Header() {
   const { designMode, toggleDesign } = useDesignMode();
-  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(true);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -56,7 +56,13 @@ export default function Header() {
             <h2 id="how-to-play-title" className="text-lg font-bold">Nasıl Oynanır?</h2>
             <button type="button" onClick={() => setIsInfoOpen(false)} aria-label="Kapat">✕</button>
           </div>
-          <p className="text-sm text-neutral-300">Şarkının kısa önizlemesini dinle, arama kutusundan tahminini seç ve üç hakkını kullanmadan doğru parçayı bul.</p>
+          <div className="space-y-3 text-sm leading-relaxed text-neutral-300">
+            <p>Şarkının çok kısa girişini dinleyerek hangi şarkı olduğunu tahmin etmeye çalış.</p>
+            <p>İlk tahmininde bilemezsen, şarkının ilk birkaç saniyesini dinleyerek tekrar tahmin edebilirsin.</p>
+            <p>Yine bilemezsen, üçüncü aşamada şarkının 10 saniyelik bölümünü dinleyebilirsin.</p>
+            <p><strong className="text-white">Atla</strong> butonuna basarak dinleme süresini artırabilir ve yeni bir ipucu açabilirsin. Her şarkı için toplam 3 hakkın var.</p>
+            <p>Amacın, sıradaki 5 Türkçe şarkıyı mümkün olduğunca az ipucuyla doğru tahmin etmek.</p>
+          </div>
           <button type="button" onClick={() => setIsInfoOpen(false)} className="w-full rounded-xl bg-emerald-500 py-2.5 font-semibold text-neutral-950">Anladım</button>
         </div>
       </dialog>
