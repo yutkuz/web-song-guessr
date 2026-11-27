@@ -44,6 +44,8 @@ Windows kullanıyorsan `baslat.bat` dosyasına çift tıklayabilirsin. Dosya ger
 - Tailwind CSS
 - Deezer önizleme API'si
 
+Oyundaki şarkı önizlemeleri ve albüm kapakları Deezer API üzerinden alınır. Şarkı adları ve sanatçılar ise projedeki Türkçe şarkı kataloğundan seçilir.
+
 ## Şarkı ekleme
 
 Şarkı kataloğu `src/constants/songs.ts` dosyasındadır. Yeni bir şarkı eklemek için katalogdaki listeye şarkı adı, sanatçı, yıl ve tür bilgilerini eklemek yeterlidir.
