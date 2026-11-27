@@ -65,8 +65,8 @@ export default function GamePage() {
         </div>
       )}
       {!gameState.isLoading && gameState.track && (
-        <div className="grid w-full max-w-[1080px] mx-auto gap-8 lg:grid-cols-[680px_360px] lg:justify-center lg:items-start">
-        <div className="flex w-full min-w-0 flex-col gap-6">
+        <div className="relative w-full min-h-[520px]">
+        <div className="mx-auto flex w-full max-w-[680px] min-w-0 flex-col gap-6">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2" aria-label={`${3 - gameState.currentStageIndex} hak kaldı`}>
               <span className="text-xs text-neutral-400">Kalan hak:</span>
@@ -93,7 +93,7 @@ export default function GamePage() {
 
           {isOver && <div className="rounded-2xl border border-emerald-500/40 bg-emerald-950/40 p-6 text-center space-y-4"><h2 className="text-xl font-bold text-emerald-300">Tebrikler, 5 şarkıyı tamamladın! 🎉</h2><button onClick={gameState.resetGame} className="w-full rounded-xl bg-emerald-500 py-3 font-semibold text-neutral-950">Yeni Oyun</button></div>}
         </div>
-        {gameState.roundComplete && !isOver && <aside className="rounded-2xl border border-neutral-800 bg-neutral-950 p-5 space-y-5 lg:sticky lg:top-24">
+        {gameState.roundComplete && !isOver && <aside className="rounded-2xl border border-neutral-800 bg-neutral-950 p-5 space-y-5 lg:absolute lg:left-[calc(50%+360px)] lg:top-0 lg:w-[360px]">
           <div className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900">
             <div className="aspect-square w-full bg-neutral-800">
               {gameState.track.albumCover ? <img src={gameState.track.albumCover} alt={`${gameState.track.artist} - ${gameState.track.title}`} className="h-full w-full object-cover" /> : <div className="grid h-full place-items-center text-6xl">🎵</div>}
