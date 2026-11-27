@@ -3,7 +3,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { GameMode, GameState, GameStatus, GameStats, GuessResult, Stage, Track } from '@/types';
 import { STAGE_DURATIONS, MAX_STAGES } from '@/constants/game';
-import { getStats, INITIAL_STATS } from '@/services/statistics';
+const INITIAL_STATS: GameStats = {
+  gamesPlayed: 0,
+  gamesWon: 0,
+  currentStreak: 0,
+  maxStreak: 0,
+  distribution: [0, 0, 0],
+  lastPlayedDate: '',
+};
 
 export type Feedback = 'correct' | 'wrong' | null;
 
@@ -53,7 +60,7 @@ export function useGameState(mode: GameMode = 'unlimited'): UseGameStateReturn {
       const data = await response.json() as Track[];
       if (!Array.isArray(data) || data.length !== 5) throw new Error('Beş şarkılık liste hazırlanamadı');
       setTracks(data); setSongIndex(0); setStages(createInitialStages()); setCurrentStageIndex(0); setSelectedTrack(null); setStatus('ready');
-      setStats(getStats(mode));
+      setStats(INITIAL_STATS);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Şarkılar yüklenemedi');
       setStatus('ready');
