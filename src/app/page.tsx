@@ -7,12 +7,14 @@ import { ProgressBar } from '@/components/ProgressBar';
 import { SearchAutocomplete } from '@/components/SearchAutocomplete';
 import { GameControls } from '@/components/GameControls';
 import { STAGE_DURATIONS } from '@/constants/game';
+import { SONG_CATALOG } from '@/constants/songs';
 
 export default function GamePage() {
   const gameState = useGameState('unlimited');
   const audio = useAudioPlayer();
   const [volume, setVolume] = useState(0.5);
   const [showVolume, setShowVolume] = useState(false);
+  const [showCatalog, setShowCatalog] = useState(false);
   const previewTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -112,6 +114,22 @@ export default function GamePage() {
         </aside>}
         </div>
       )}
+      <div className="mx-auto mt-10 w-full max-w-[760px] border-t border-white/10 pt-6 text-center">
+        <button type="button" onClick={() => setShowCatalog(true)} className="rounded-full border border-white/10 bg-white/[.04] px-5 py-2.5 text-sm font-semibold text-neutral-300 transition hover:border-indigo-400/50 hover:bg-indigo-400/10 hover:text-white">
+          50 Şarkılık Listeyi Gör
+        </button>
+      </div>
+      {showCatalog && <div className="fixed inset-0 z-50 grid place-items-center bg-black/75 p-4" role="dialog" aria-modal="true" aria-labelledby="song-catalog-title" onClick={() => setShowCatalog(false)}>
+        <div className="glass-panel max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-[26px] p-5 text-left" onClick={(event) => event.stopPropagation()}>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 id="song-catalog-title" className="text-xl font-bold text-white">Oyundaki 50 Türkçe Şarkı</h2>
+            <button type="button" onClick={() => setShowCatalog(false)} aria-label="Şarkı listesini kapat" className="rounded-lg px-2 py-1 text-neutral-400 hover:bg-white/10 hover:text-white">✕</button>
+          </div>
+          <ol className="max-h-[65vh] space-y-1 overflow-y-auto pr-2">
+            {SONG_CATALOG.map((song, index) => <li key={`${song.title}-${song.artist}`} className="flex items-center gap-3 rounded-xl border border-white/5 bg-white/[.03] px-3 py-2.5 text-sm"><span className="w-7 shrink-0 text-right font-mono text-neutral-500">{index + 1}</span><span className="min-w-0 flex-1"><strong className="text-neutral-100">{song.title}</strong><span className="text-neutral-400"> — {song.artist}</span></span><span className="hidden text-xs text-neutral-500 sm:inline">{song.year} · {song.genre}</span></li>)}
+          </ol>
+        </div>
+      </div>}
     </div>
   );
 }
