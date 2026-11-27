@@ -45,10 +45,13 @@ async function resolveSong(title: string, artist: string): Promise<Track> {
 
 export async function GET(request: NextRequest) {
   try {
-    const seed = Math.floor(Math.random() * SONG_CATALOG.length);
-    const requestedIndex = Number(request.nextUrl.searchParams.get('index'));
-    const item = SONG_CATALOG[Number.isInteger(requestedIndex) && requestedIndex >= 0 && requestedIndex < SONG_CATALOG.length ? requestedIndex : seed];
-    return NextResponse.json(await resolveSong(item.title, item.artist), {
+    const count = Number(request.nextUrl.searchParams.get('count'));
+    const indexes = [...SONG_CATALOG.keys()].sort(() => Math.random() - 0.5).slice(0, count === 5 ? 5 : 1);
+    const tracks = await Promise.all(indexes.map((index) => {
+      const item = SONG_CATALOG[index];
+      return resolveSong(item.title, item.artist);
+    }));
+    return NextResponse.json(count === 5 ? tracks : tracks[0], {
       headers: { 'Cache-Control': 'no-store' },
     });
   } catch (error) {

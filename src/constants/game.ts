@@ -1,4 +1,4 @@
-export const STAGE_DURATIONS = [1, 3, 10] as const;  // saniye
+export const STAGE_DURATIONS = [0.7, 3.7, 10] as const;  // saniye
 export const MAX_STAGES = 3;
 export const PREVIEW_DURATION = 30;    // saniye (doğru tahmin sonrası)
 export const DEBOUNCE_DELAY = 300;     // ms (arama debounce)

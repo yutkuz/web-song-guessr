@@ -6,7 +6,6 @@ import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { ProgressBar } from '@/components/ProgressBar';
 import { SearchAutocomplete } from '@/components/SearchAutocomplete';
 import { GameControls } from '@/components/GameControls';
-import { ResultScreen } from '@/components/ResultScreen';
 import { STAGE_DURATIONS } from '@/constants/game';
 
 export default function GamePage() {
@@ -28,7 +27,7 @@ export default function GamePage() {
   const changeVolume = (value: number) => { setVolume(value); audio.setVolume(value); };
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-6 py-4 select-none">
+    <div className={`w-full flex-1 flex flex-col gap-6 py-4 select-none transition-colors duration-300 ${gameState.feedback === 'correct' ? 'bg-emerald-500/20' : gameState.feedback === 'wrong' ? 'bg-rose-500/20' : ''}`}>
       {gameState.isLoading && <div className="flex-1 grid place-items-center text-neutral-400">Şarkı hazırlanıyor...</div>}
       {!gameState.isLoading && gameState.error && !gameState.track && (
         <div role="alert" className="m-auto text-center space-y-4">
@@ -39,11 +38,15 @@ export default function GamePage() {
       {!gameState.isLoading && gameState.track && (
         <>
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-1.5 text-2xl" aria-label={`${3 - gameState.currentStageIndex} hak kaldı`}>
+            <div className="flex items-center gap-2" aria-label={`${3 - gameState.currentStageIndex} hak kaldı`}>
+              <span className="text-xs text-neutral-400">Kalan hak:</span>
+              <div className="flex items-center gap-1.5 text-2xl">
               {[0, 1, 2].map((heart) => (
                 <span key={heart} className={heart < 3 - gameState.currentStageIndex ? 'text-rose-400' : 'text-neutral-700'}>♥</span>
               ))}
+              </div>
             </div>
+            <span className="text-sm font-medium text-neutral-400">Şarkı {gameState.songNumber}/{gameState.totalSongs}</span>
             <label className="flex items-center gap-2 text-neutral-400" aria-label="Ses seviyesi">
               <span className="text-lg">🔊</span>
               <input type="range" min="0" max="1" step="0.01" value={volume} onChange={(e) => changeVolume(Number(e.target.value))} className="w-24 accent-emerald-500" />
@@ -57,7 +60,7 @@ export default function GamePage() {
             <GameControls isPlaying={audio.isPlaying} currentStageIndex={gameState.currentStageIndex} hasSelectedTrack={gameState.selectedTrack !== null} gameStatus={audio.isPlaying ? 'playing' : gameState.status} onPlay={() => audio.play(duration)} onStop={audio.stop} onSkip={() => { audio.stop(); gameState.skipStage(); }} onGuess={() => { audio.stop(); gameState.submitGuess(); }} />
           </div>}
 
-          {isOver && <ResultScreen track={gameState.track} stages={gameState.stages} won={gameState.status === 'won'} mode="unlimited" stats={gameState.stats} onPlayPreview={() => audio.isPlaying ? audio.stop() : audio.playPreview()} isPlayingPreview={audio.isPlaying} onPlayAgain={gameState.resetGame} />}
+          {isOver && <div className="rounded-2xl border border-emerald-500/40 bg-emerald-950/40 p-6 text-center space-y-4"><h2 className="text-xl font-bold text-emerald-300">Tebrikler, 5 şarkıyı tamamladın! 🎉</h2><button onClick={gameState.resetGame} className="w-full rounded-xl bg-emerald-500 py-3 font-semibold text-neutral-950">Yeni Oyun</button></div>}
         </>
       )}
     </div>
