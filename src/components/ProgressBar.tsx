@@ -32,7 +32,7 @@ export function ProgressBar({ currentTime, duration = TOTAL_DURATION, isPlaying 
         <div className="h-full rounded-full bg-emerald-500 transition-[width] duration-75" style={{ width: `${(safeTime / limit) * 100}%` }} />
         {[0.7, 3.7].map((mark) => <span key={mark} className="absolute top-0 bottom-0 w-px bg-neutral-950/90" style={{ left: `${mark * 10}%` }} />)}
       </div>
-      <div className="flex justify-between text-[10px] text-neutral-500"><span>0s</span><span>0.7s</span><span>3.7s</span><span>10s</span></div>
+      <div className="relative h-4 text-[10px] text-neutral-500"><span className="absolute left-0">0s</span><span className="absolute -translate-x-1/2" style={{ left: '7%' }}>0.7s</span><span className="absolute -translate-x-1/2" style={{ left: '37%' }}>3.7s</span><span className="absolute right-0">10s</span></div>
     </div>
   );
 }

@@ -20,12 +20,14 @@ export interface UseGameStateReturn {
   songNumber: number;
   totalSongs: number;
   feedback: Feedback;
+  roundComplete: boolean;
   selectTrack: (track: Track | null) => void;
   submitGuess: () => void;
   skipStage: () => void;
   resetGame: () => Promise<void>;
   setStatus: React.Dispatch<React.SetStateAction<GameStatus>>;
   gameState: GameState;
+  nextSong: () => void;
 }
 
 export const createInitialStages = (): Stage[] =>
@@ -41,9 +43,10 @@ export function useGameState(mode: GameMode = 'unlimited'): UseGameStateReturn {
   const [stats, setStats] = useState<GameStats>(INITIAL_STATS);
   const [error, setError] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<Feedback>(null);
+  const [roundComplete, setRoundComplete] = useState(false);
 
   const initGame = useCallback(async () => {
-    setStatus('loading'); setError(null); setFeedback(null);
+    setStatus('loading'); setError(null); setFeedback(null); setRoundComplete(false);
     try {
       const response = await fetch('/api/daily-tracks?count=5', { cache: 'no-store' });
       if (!response.ok) throw new Error(`Şarkılar alınamadı (HTTP ${response.status})`);
@@ -74,6 +77,11 @@ export function useGameState(mode: GameMode = 'unlimited'): UseGameStateReturn {
     setStatus('ready');
   }, [songIndex, tracks.length]);
 
+  const nextSong = useCallback(() => {
+    setRoundComplete(false);
+    advance();
+  }, [advance]);
+
   const submitGuess = useCallback(() => {
     if (!selectedTrack || !track || status === 'loading' || status === 'won') return;
     const correct = selectedTrack.id === track.id || (selectedTrack.title.toLocaleLowerCase('tr-TR') === track.title.toLocaleLowerCase('tr-TR') && selectedTrack.artist.toLocaleLowerCase('tr-TR') === track.artist.toLocaleLowerCase('tr-TR'));
@@ -82,24 +90,24 @@ export function useGameState(mode: GameMode = 'unlimited'): UseGameStateReturn {
     setStages((previous) => previous.map((stage, index) => index === currentStageIndex ? { ...stage, result: correct ? 'correct' : 'wrong', guess: selectedTrack } : stage));
     setSelectedTrack(null);
     if (correct || currentStageIndex >= MAX_STAGES - 1) {
-      setTimeout(advance, 650);
+      setRoundComplete(true);
     } else {
       setCurrentStageIndex((index) => index + 1);
     }
-  }, [selectedTrack, track, status, currentStageIndex, advance]);
+  }, [selectedTrack, track, status, currentStageIndex]);
 
   const skipStage = useCallback(() => {
     if (!track || status === 'loading' || status === 'won') return;
     setFeedback('wrong'); setTimeout(() => setFeedback(null), 650);
     setStages((previous) => previous.map((stage, index) => index === currentStageIndex ? { ...stage, result: 'skipped' } : stage));
     setSelectedTrack(null);
-    if (currentStageIndex >= MAX_STAGES - 1) setTimeout(advance, 650);
+    if (currentStageIndex >= MAX_STAGES - 1) setRoundComplete(true);
     else setCurrentStageIndex((index) => index + 1);
-  }, [track, status, currentStageIndex, advance]);
+  }, [track, status, currentStageIndex]);
 
   const resetGame = useCallback(async () => { await initGame(); }, [initGame]);
   const gameState: GameState = { track, stages, currentStageIndex, status, mode, selectedTrack };
-  return { track, stages, currentStageIndex, status, mode, selectedTrack, stats, error, isLoading: status === 'loading', songNumber: Math.min(songIndex + 1, 5), totalSongs: 5, feedback, selectTrack, submitGuess, skipStage, resetGame, setStatus, gameState };
+  return { track, stages, currentStageIndex, status, mode, selectedTrack, stats, error, isLoading: status === 'loading', songNumber: Math.min(songIndex + 1, 5), totalSongs: 5, feedback, roundComplete, selectTrack, submitGuess, skipStage, resetGame, setStatus, gameState, nextSong };
 }
 
 export default useGameState;
