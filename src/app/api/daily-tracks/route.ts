@@ -4,6 +4,9 @@ import { Track } from '@/types';
 export const dynamic = 'force-dynamic';
 
 const DEEZER_CHART_URL = 'https://api.deezer.com/chart/0/tracks?limit=100';
+// Deezer'deki güncel Türkçe pop listesi. Parçalar aşağıdaki istekle her saat yenilenir.
+const TURKISH_POP_PLAYLIST_URL =
+  'https://api.deezer.com/playlist/16011992503/tracks?limit=100';
 
 interface DeezerArtist {
   id?: number;
@@ -27,6 +30,11 @@ interface DeezerTrackItem {
 }
 
 interface DeezerChartResponse {
+  data?: DeezerTrackItem[];
+  error?: unknown;
+}
+
+interface DeezerPlaylistResponse {
   data?: DeezerTrackItem[];
   error?: unknown;
 }
@@ -188,7 +196,7 @@ function getDailySeed(dateStr: string): number {
  */
 async function fetchTrackPool(): Promise<Track[]> {
   try {
-    const response = await fetch(DEEZER_CHART_URL, {
+    const response = await fetch(TURKISH_POP_PLAYLIST_URL, {
       headers: {
         Accept: 'application/json',
       },
@@ -196,16 +204,12 @@ async function fetchTrackPool(): Promise<Track[]> {
       signal: AbortSignal.timeout(5000),
     });
 
-    if (!response.ok) {
-      console.warn(`Deezer chart isteği başarısız oldu (durum: ${response.status}), yedek liste kullanılıyor.`);
-      return FALLBACK_TRACKS;
-    }
+    if (!response.ok) throw new Error(`Türkçe pop listesi HTTP ${response.status}`);
 
-    const data: DeezerChartResponse = await response.json();
+    const data: DeezerPlaylistResponse = await response.json();
 
     if (data.error || !Array.isArray(data.data) || data.data.length === 0) {
-      console.warn('Deezer chart verisi geçersiz veya boş, yedek liste kullanılıyor.');
-      return FALLBACK_TRACKS;
+      throw new Error('Türkçe pop listesi boş veya geçersiz');
     }
 
     const validTracks: Track[] = data.data
@@ -221,18 +225,39 @@ async function fetchTrackPool(): Promise<Track[]> {
         previewUrl: item.preview,
       }));
 
-    if (validTracks.length === 0) {
-      console.warn('Deezer şarkılarında geçerli önizleme (preview) bulunamadı, yedek liste kullanılıyor.');
-      return FALLBACK_TRACKS;
-    }
+    if (validTracks.length === 0) throw new Error('Türkçe pop listesinde önizleme yok');
 
     // Sıralama dalgalanmalarına karşı havuzu ID bazında sıralayarak gün içindeki determinizmi koruyoruz
     validTracks.sort((a, b) => a.id - b.id);
 
     return validTracks;
   } catch (error) {
-    console.error('Deezer chart çekilirken hata oluştu, yedek liste kullanılıyor:', error);
-    return FALLBACK_TRACKS;
+    console.warn('Türkçe pop listesi alınamadı, genel Deezer listesine düşülüyor:', error);
+
+    try {
+      const response = await fetch(DEEZER_CHART_URL, {
+        headers: { Accept: 'application/json' },
+        next: { revalidate: 3600 },
+        signal: AbortSignal.timeout(5000),
+      });
+      if (!response.ok) return FALLBACK_TRACKS;
+
+      const data: DeezerChartResponse = await response.json();
+      const tracks = (data.data ?? [])
+        .filter((item): item is DeezerTrackItem & { preview: string } => Boolean(item.preview?.trim()))
+        .map((item) => ({
+          id: item.id,
+          title: item.title_short || item.title,
+          artist: item.artist?.name || 'Bilinmeyen Sanatçı',
+          album: item.album?.title || '',
+          albumCover: item.album?.cover_medium || item.album?.cover || '',
+          previewUrl: item.preview,
+        }));
+      return tracks.length > 0 ? tracks : FALLBACK_TRACKS;
+    } catch (fallbackError) {
+      console.error('Deezer listeleri alınamadı, yedek liste kullanılıyor:', fallbackError);
+      return FALLBACK_TRACKS;
+    }
   }
 }
 
