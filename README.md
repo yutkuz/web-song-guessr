@@ -4,6 +4,8 @@
 
 Şarkı listesi sabit tutulmuştur; ileride yeni şarkılar kolayca eklenebilir.
 
+Projeyi bilgisayarına indirmeden doğrudan [sarkitahminet.netlify.app](https://sarkitahminet.netlify.app/) adresinden deneyebilirsin.
+
 ## Gereksinimler
 
 - Node.js 18 veya daha yeni bir sürüm
