@@ -27,6 +27,22 @@ interface DeezerSearchResponse {
   error?: unknown;
 }
 
+// Tahmin havuzu yalnızca Türkçe müzik sanatçılarından oluşur.
+const TURKISH_ARTISTS = new Set([
+  'Tarkan', 'Sezen Aksu', 'Barış Manço', 'Cem Karaca', 'Athena', 'Mor ve Ötesi',
+  'Duman', 'Teoman', 'Şebnem Ferah', 'Mabel Matiz', 'Kenan Doğulu', 'Sertab Erener',
+  'Hadise', 'Gülşen', 'Demet Akalın', 'Edis', 'Simge', 'Yalın', 'Buray', 'Emre Aydın',
+  'Murat Boz', 'Oğuzhan Koç', 'Sıla', 'Bengü', 'Hande Yener', 'Ajda Pekkan',
+  'Nilüfer', 'Athena', 'İbrahim Tatlıses', 'Müslüm Gürses', 'Yıldız Tilbe',
+  'Derya Uluğ', 'Ebru Yaşar', 'Sibel Can', 'Serdar Ortaç', 'Murat Dalkılıç',
+  'Mustafa Ceceli', 'Gökhan Türkmen', 'İrem Derici', 'Aleyna Tilki', 'Melike Şahin',
+  'Semicenk', 'Reynmen', 'Burak Bulut', 'Kubilay Karça', 'BLOK3', 'Lvbel C5',
+  'Motive', 'Uzi', 'Ezhel', 'Ceza', 'Sagopa Kajmer', 'Gazapizm', 'Ben Fero',
+  'Kaan Boşnak', 'Can Bonomo', 'Manga', 'Pinhani', 'Yüzyüzeyken Konuşuruz',
+  'Adamlar', 'Büyük Ev Ablukada', 'Kalben', 'Melek Mosso', 'Merve Özbey',
+  'Tuğba Yurt', 'Zakkum', 'İlyas Yalçıntaş', 'Funda Arar', 'Feridun Düzağaç',
+]);
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -65,7 +81,12 @@ export async function GET(request: NextRequest) {
 
     const tracks: Track[] = data.data
       .filter((item): item is DeezerTrackItem & { preview: string } =>
-        Boolean(item.preview && item.preview.trim() !== '')
+        Boolean(
+          item.preview &&
+            item.preview.trim() !== '' &&
+            item.artist?.name &&
+            TURKISH_ARTISTS.has(item.artist.name)
+        )
       )
       .map((item) => ({
         id: item.id,
