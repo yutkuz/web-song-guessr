@@ -46,12 +46,30 @@ async function resolveSong(title: string, artist: string): Promise<Track> {
 export async function GET(request: NextRequest) {
   try {
     const count = Number(request.nextUrl.searchParams.get('count'));
-    const indexes = [...SONG_CATALOG.keys()].sort(() => Math.random() - 0.5).slice(0, count === 5 ? 5 : 1);
+    const excludedIndexes = new Set(
+      (request.nextUrl.searchParams.get('exclude') || '')
+        .split(',')
+        .map(Number)
+        .filter((index) => Number.isInteger(index) && index >= 0),
+    );
+    const availableIndexes = [...SONG_CATALOG.keys()].filter((index) => !excludedIndexes.has(index));
+    if (availableIndexes.length === 0) throw new Error('Kullanılabilir şarkı kalmadı');
+
+    // Her istekte bağımsız bir şarkı seçilir. `exclude`, aynı oyun içindeki
+    // önceki seçimlerin tekrar dönmesini engeller.
+    const randomIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
+    const indexes = count === 5
+      ? availableIndexes.sort(() => Math.random() - 0.5).slice(0, 5)
+      : [randomIndex];
     const tracks = await Promise.all(indexes.map((index) => {
       const item = SONG_CATALOG[index];
       return resolveSong(item.title, item.artist);
     }));
-    return NextResponse.json(count === 5 ? tracks : tracks[0], {
+    const responseTracks = tracks.map((track, position) => ({
+      ...track,
+      catalogIndex: indexes[position],
+    }));
+    return NextResponse.json(count === 5 ? responseTracks : responseTracks[0], {
       headers: { 'Cache-Control': 'no-store' },
     });
   } catch (error) {

@@ -55,11 +55,22 @@ export function useGameState(mode: GameMode = 'unlimited'): UseGameStateReturn {
   const initGame = useCallback(async () => {
     setStatus('loading'); setError(null); setFeedback(null); setRoundComplete(false);
     try {
-      const response = await fetch('/api/daily-tracks?count=5', { cache: 'no-store' });
-      if (!response.ok) throw new Error(`Şarkılar alınamadı (HTTP ${response.status})`);
-      const data = await response.json() as Track[];
-      if (!Array.isArray(data) || data.length !== 5) throw new Error('Beş şarkılık liste hazırlanamadı');
-      setTracks(data); setSongIndex(0); setStages(createInitialStages()); setCurrentStageIndex(0); setSelectedTrack(null); setStatus('ready');
+      const selectedIndexes: number[] = [];
+      const loadedTracks: Track[] = [];
+
+      for (let songNumber = 0; songNumber < 5; songNumber += 1) {
+        const exclude = selectedIndexes.join(',');
+        const response = await fetch(`/api/daily-tracks?count=1${exclude ? `&exclude=${exclude}` : ''}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`Şarkılar alınamadı (HTTP ${response.status})`);
+        const data = await response.json() as Track & { catalogIndex?: number };
+        if (!data || typeof data.id !== 'number') throw new Error('Beş şarkılık liste hazırlanamadı');
+        loadedTracks.push(data);
+        if (typeof data.catalogIndex !== 'number') throw new Error('Şarkı seçim bilgisi alınamadı');
+        selectedIndexes.push(data.catalogIndex);
+      }
+
+      if (loadedTracks.length !== 5) throw new Error('Beş şarkılık liste hazırlanamadı');
+      setTracks(loadedTracks); setSongIndex(0); setStages(createInitialStages()); setCurrentStageIndex(0); setSelectedTrack(null); setStatus('ready');
       setStats(INITIAL_STATS);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Şarkılar yüklenemedi');
