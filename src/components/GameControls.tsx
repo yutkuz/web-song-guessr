@@ -57,7 +57,7 @@ export function GameControls({
   const deltaSeconds = Math.max(0, nextDuration - currentDuration);
 
   // Buton etiketleri
-  const skipButtonLabel = 'Atla';
+  const skipButtonLabel = isLastStage ? 'Atla' : 'Uzat';
 
   // Tahmin Et butonu devre dışı mı?
   const isGuessDisabled = isControlsDisabled || !hasSelectedTrack;
