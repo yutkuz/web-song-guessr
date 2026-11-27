@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 export type DesignMode = 'classic' | 'spotify' | 'arcade';
 
+const DESIGN_STORAGE_KEY = 'song-guess-design-v2';
+
 type DesignContextValue = {
   designMode: DesignMode;
   toggleDesign: () => void;
@@ -15,7 +17,7 @@ export function DesignProvider({ children }: { children: React.ReactNode }) {
   const [designMode, setDesignMode] = useState<DesignMode>('classic');
 
   useEffect(() => {
-    const saved = window.localStorage.getItem('song-guess-design');
+    const saved = window.localStorage.getItem(DESIGN_STORAGE_KEY);
     if (saved === 'spotify' || saved === 'classic' || saved === 'arcade') setDesignMode(saved);
   }, []);
 
@@ -23,7 +25,7 @@ export function DesignProvider({ children }: { children: React.ReactNode }) {
     designMode,
     toggleDesign: () => setDesignMode((current) => {
       const next = current === 'classic' ? 'spotify' : current === 'spotify' ? 'arcade' : 'classic';
-      window.localStorage.setItem('song-guess-design', next);
+      window.localStorage.setItem(DESIGN_STORAGE_KEY, next);
       return next;
     }),
   }), [designMode]);
