@@ -55,8 +55,7 @@ export default function GamePage() {
   };
 
   return (
-    <div className="relative w-full flex-1 flex flex-col gap-6 py-4 select-none">
-      <h1 className="sr-only">Şarkıyı Tahmin Et</h1>
+    <div className="relative w-full flex-1 flex flex-col gap-6 py-2 select-none">
       {gameState.feedback && <div className={`fixed inset-0 z-50 pointer-events-none ${gameState.feedback === 'correct' ? 'bg-emerald-400/30' : 'bg-rose-400/30'} motion-safe:animate-pulse`} aria-hidden="true" />}
       {gameState.isLoading && <div className="flex-1 grid place-items-center text-neutral-400">Şarkı hazırlanıyor...</div>}
       {!gameState.isLoading && gameState.error && !gameState.track && (
@@ -67,17 +66,23 @@ export default function GamePage() {
       )}
       {!gameState.isLoading && gameState.track && (
         <div className="relative w-full min-h-[520px]">
-        <div className="mx-auto flex w-full max-w-[680px] min-w-0 flex-col gap-6">
+        <div className="float-in mx-auto flex w-full max-w-[760px] min-w-0 flex-col gap-6">
+          <div className="space-y-3 text-center sm:text-left">
+            <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
+              <div><h2 className="text-3xl font-black tracking-tight sm:text-4xl">Kulaklarını <span className="text-gradient">test et.</span></h2><p className="mt-1 text-sm text-neutral-400">Kısa bir kesit dinle, şarkıyı bilmeye çalış.</p></div>
+            </div>
+          </div>
+          <div className="glass-panel neon-ring rounded-[28px] p-4 sm:p-7">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2" aria-label={`${3 - gameState.currentStageIndex} hak kaldı`}>
-              <span className="text-xs text-neutral-400">Kalan hak:</span>
+              <div className="flex items-center gap-2" aria-label={`${3 - gameState.currentStageIndex} hak kaldı`}>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">Hakların</span>
               <div className="flex items-center gap-1.5 text-2xl">
               {[0, 1, 2].map((heart) => (
                 <span key={heart} className={heart < 3 - gameState.currentStageIndex ? 'text-rose-400' : 'text-neutral-700'}>♥</span>
               ))}
               </div>
             </div>
-            <span className="text-sm font-medium text-neutral-400">Şarkı {gameState.songNumber}/{gameState.totalSongs}</span>
+            <span className="rounded-full border border-white/10 bg-white/[.04] px-3 py-1 text-xs font-semibold text-neutral-300">Şarkı {gameState.songNumber}<span className="text-neutral-600"> / </span>{gameState.totalSongs}</span>
             <label htmlFor="volume-slider" className="relative flex items-center gap-2 text-neutral-400" onClick={revealVolume} onFocus={revealVolume}>
               {showVolume && <span className="absolute -top-6 right-0 rounded bg-neutral-800 px-1.5 py-0.5 text-[10px] text-neutral-200">{Math.round(volume * 100)}%</span>}
               <span className="text-lg">🔊</span>
@@ -93,16 +98,17 @@ export default function GamePage() {
           </div>}
 
           {isOver && <div className="rounded-2xl border border-emerald-500/40 bg-emerald-950/40 p-6 text-center space-y-4"><h2 className="text-xl font-bold text-emerald-300">Tebrikler, 5 şarkıyı tamamladın! 🎉</h2><button onClick={gameState.resetGame} className="w-full rounded-xl bg-emerald-500 py-3 font-semibold text-neutral-950">Yeni Oyun</button></div>}
+          </div>
         </div>
-        {gameState.roundComplete && !isOver && <aside className="rounded-2xl border border-neutral-800 bg-neutral-950 p-5 space-y-5 lg:absolute lg:left-[calc(50%+360px)] lg:top-0 lg:w-[360px]">
-          <div className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900">
-            <div className="aspect-square w-full bg-neutral-800">
+        {gameState.roundComplete && !isOver && <aside className="glass-panel rounded-[26px] p-5 space-y-5 lg:absolute lg:left-[calc(50%+400px)] lg:top-0 lg:w-[360px]">
+          <div className="overflow-hidden rounded-2xl border border-white/10 bg-neutral-900">
+            <div className="noise aspect-square w-full bg-gradient-to-br from-indigo-950 to-neutral-900">
               {gameState.track.albumCover ? <img src={gameState.track.albumCover} alt={`${gameState.track.artist} - ${gameState.track.title}`} width={500} height={500} loading="lazy" decoding="async" className="h-full w-full object-cover" /> : <div className="grid h-full place-items-center text-6xl">🎵</div>}
             </div>
             <div className="p-5"><p className="text-xs uppercase tracking-wider text-neutral-500">Cevap</p><h2 className="mt-1 text-2xl font-bold text-white">{gameState.track.title}</h2><p className="mt-1 text-lg text-neutral-300">{gameState.track.artist}</p>{gameState.track.album && <p className="mt-1 text-sm text-neutral-500">{gameState.track.album}</p>}</div>
           </div>
-          <button onClick={() => audio.isPlaying ? audio.stop() : audio.play(10)} className="w-full rounded-xl bg-emerald-500 py-4 text-lg font-semibold text-neutral-950">{audio.isPlaying ? 'Durdur' : '▶ Önizlemeyi oynat'}</button>
-          <button onClick={() => { if (previewTimer.current) clearTimeout(previewTimer.current); audio.stop(); gameState.nextSong(); }} className="w-full rounded-xl border border-neutral-700 bg-neutral-800 py-3 font-semibold text-white hover:bg-neutral-700">Sonraki şarkı</button>
+          <button onClick={() => audio.isPlaying ? audio.stop() : audio.play(10)} className="w-full rounded-xl bg-emerald-400 py-4 text-lg font-semibold text-[#07120f] shadow-lg shadow-emerald-950/30 transition hover:bg-emerald-300">{audio.isPlaying ? 'Durdur' : '▶ Önizlemeyi oynat'}</button>
+          <button onClick={() => { if (previewTimer.current) clearTimeout(previewTimer.current); audio.stop(); gameState.nextSong(); }} className="w-full rounded-xl border border-white/10 bg-white/[.06] py-3 font-semibold text-white transition hover:bg-white/[.1]">Sonraki şarkı</button>
         </aside>}
         </div>
       )}

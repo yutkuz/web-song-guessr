@@ -267,10 +267,10 @@ export function SearchAutocomplete({
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
-          className={`w-full pl-10 pr-10 py-3 text-sm sm:text-base rounded-xl font-normal transition-all duration-200 outline-none ${
+          className={`w-full pl-11 pr-10 py-3.5 text-sm sm:text-base rounded-2xl font-normal transition-all duration-200 outline-none ${
             disabled
               ? 'bg-neutral-900/60 border border-neutral-800 text-neutral-500 placeholder-neutral-600 cursor-not-allowed opacity-60'
-              : 'bg-neutral-900 border border-neutral-700 text-neutral-100 placeholder-neutral-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30'
+              : 'bg-[#0b0b14]/90 border border-white/10 text-neutral-100 placeholder-neutral-500 focus:border-indigo-400/70 focus:ring-4 focus:ring-indigo-500/10'
           }`}
         />
 
@@ -331,7 +331,7 @@ export function SearchAutocomplete({
 
       {/* Otomatik Tamamlama Dropdown Listesi */}
       {showDropdown && (
-        <div className="absolute z-50 left-0 right-0 mt-2 max-h-72 sm:max-h-80 overflow-y-auto bg-neutral-900 border border-neutral-700/80 rounded-xl shadow-2xl backdrop-blur-md">
+        <div className="absolute z-50 left-0 right-0 mt-2 max-h-72 sm:max-h-80 overflow-y-auto rounded-2xl border border-white/10 bg-[#141421]/95 shadow-2xl shadow-black/50 backdrop-blur-xl">
           {/* Yükleniyor Durumu (İlk arama sırasında) */}
           {isLoading && results.length === 0 && (
             <div className="p-4 flex items-center justify-center gap-2.5 text-neutral-400 text-sm">

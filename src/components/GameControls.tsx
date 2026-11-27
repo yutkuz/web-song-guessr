@@ -80,9 +80,9 @@ export function GameControls({
           className={`w-full min-h-[48px] sm:min-h-[52px] px-6 py-3 rounded-xl font-semibold text-base sm:text-lg flex items-center justify-center gap-2.5 transition-all duration-200 shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 ${
             isControlsDisabled
               ? 'bg-neutral-800 text-neutral-500 border border-neutral-700/60 cursor-not-allowed opacity-50 shadow-none'
-              : isPlaying
+            : isPlaying
               ? 'bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white shadow-amber-950/40 ring-1 ring-amber-400/30 motion-safe:animate-pulse'
-              : 'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white shadow-emerald-950/40 ring-1 ring-emerald-400/30'
+              : 'bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 active:from-indigo-600 active:to-violet-600 text-white shadow-indigo-950/40 ring-1 ring-indigo-300/30'
           }`}
         >
           {isPlaying ? (
@@ -108,7 +108,7 @@ export function GameControls({
               >
                 <polygon points="6 4 20 12 6 20 6 4" />
               </svg>
-              <span>Oynat ({currentDuration}s)</span>
+              <span>Oynat</span>
             </>
           )}
         </button>
@@ -127,7 +127,7 @@ export function GameControls({
               ? 'bg-neutral-900 border-neutral-800 text-neutral-600 cursor-not-allowed opacity-50'
               : isLastStage
               ? 'bg-neutral-800/90 hover:bg-neutral-700 text-rose-300 hover:text-rose-200 border-neutral-700 hover:border-rose-500/50 active:bg-neutral-800 shadow-sm'
-              : 'bg-neutral-800/90 hover:bg-neutral-700 text-neutral-200 hover:text-white border-neutral-700 hover:border-neutral-600 active:bg-neutral-800 shadow-sm'
+              : 'bg-white/[.05] hover:bg-white/[.1] text-neutral-200 hover:text-white border-white/10 hover:border-white/20 active:bg-white/[.08] shadow-sm'
           }`}
         >
           {/* İleri / Atla İkonu */}
@@ -158,7 +158,7 @@ export function GameControls({
           className={`min-h-[44px] px-4 py-2.5 rounded-xl font-semibold text-sm sm:text-base flex items-center justify-center gap-2 border transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 ${
             isGuessDisabled
               ? 'bg-neutral-900 border-neutral-800 text-neutral-600 cursor-not-allowed opacity-50'
-              : 'bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white border-indigo-500/50 shadow-md shadow-indigo-950/40 ring-1 ring-indigo-400/30'
+              : 'bg-emerald-400 hover:bg-emerald-300 active:bg-emerald-500 text-[#07120f] border-emerald-300/50 shadow-md shadow-emerald-950/40 ring-1 ring-emerald-200/30'
           }`}
         >
           {/* Onay / Gönder İkonu */}

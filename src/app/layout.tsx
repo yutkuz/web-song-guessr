@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
+import { DesignProvider, DesignShell } from "@/components/DesignProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -24,14 +25,18 @@ export default function RootLayout({
         >
           Ana içeriğe geç
         </a>
-        <Header />
-        <main
-          id="main-content"
-          tabIndex={-1}
-          className="max-w-6xl w-full mx-auto px-4 py-4 sm:py-6 flex-1 flex flex-col"
-        >
-          {children}
-        </main>
+        <DesignProvider>
+          <DesignShell>
+            <Header />
+            <main
+              id="main-content"
+              tabIndex={-1}
+              className="max-w-6xl w-full mx-auto px-4 py-6 sm:py-10 flex-1 flex flex-col"
+            >
+              {children}
+            </main>
+          </DesignShell>
+        </DesignProvider>
       </body>
     </html>
   );
