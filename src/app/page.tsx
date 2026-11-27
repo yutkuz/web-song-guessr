@@ -10,8 +10,12 @@ import { GameControls } from '@/components/GameControls';
 import { ResultScreen } from '@/components/ResultScreen';
 import { STAGE_DURATIONS } from '@/constants/game';
 
-export default function DailyGamePage() {
-  const gameState = useGameState('daily');
+export interface GamePageProps {
+  mode?: 'daily' | 'unlimited';
+}
+
+export function GamePage({ mode = 'daily' }: GamePageProps) {
+  const gameState = useGameState(mode);
   const audio = useAudioPlayer();
 
   // Şarkı yüklendiğinde ses oynatıcısına MP3 önizleme URL'sini ver
@@ -200,7 +204,7 @@ export default function DailyGamePage() {
                 track={gameState.track}
                 stages={gameState.stages}
                 won={gameState.status === 'won'}
-                mode="daily"
+                mode={mode}
                 stats={gameState.stats}
                 onPlayPreview={handlePlayPreview}
                 isPlayingPreview={audio.isPlaying}
@@ -211,4 +215,8 @@ export default function DailyGamePage() {
       )}
     </div>
   );
+}
+
+export default function DailyGamePage() {
+  return <GamePage mode="daily" />;
 }
