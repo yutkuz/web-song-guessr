@@ -115,7 +115,7 @@ export function GameControls({
       </div>
 
       {/* 2. İkincil Aksiyonlar: Atla (Pas) & Tahmin Et Butonları */}
-      <div className="grid grid-cols-2 gap-3 w-full">
+      <div className="game-secondary-actions grid grid-cols-2 gap-3 w-full">
         {/* Atla / Pas Butonu */}
         <button
           type="button"

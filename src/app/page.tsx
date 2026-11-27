@@ -73,7 +73,7 @@ export default function GamePage() {
             </div>
           </div>
           <div className="glass-panel neon-ring rounded-[28px] p-4 sm:p-7">
-          <div className="flex items-center justify-between gap-4">
+          <div className="game-status-row flex items-center justify-between gap-4">
               <div className="flex items-center gap-2" aria-label={`${3 - gameState.currentStageIndex} hak kaldı`}>
               <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">Hakların</span>
               <div className="flex items-center gap-1.5 text-2xl">
@@ -83,7 +83,7 @@ export default function GamePage() {
               </div>
             </div>
             <span className="rounded-full border border-white/10 bg-white/[.04] px-3 py-1 text-xs font-semibold text-neutral-300">Şarkı {gameState.songNumber}<span className="text-neutral-600"> / </span>{gameState.totalSongs}</span>
-            <label htmlFor="volume-slider" className="relative flex items-center gap-2 text-neutral-400" onClick={revealVolume} onFocus={revealVolume}>
+            <label htmlFor="volume-slider" className="game-volume relative flex items-center gap-2 text-neutral-400" onClick={revealVolume} onFocus={revealVolume}>
               {showVolume && <span className="absolute -top-6 right-0 rounded bg-neutral-800 px-1.5 py-0.5 text-[10px] text-neutral-200">{Math.round(volume * 100)}%</span>}
               <span className="text-lg">🔊</span>
               <input id="volume-slider" type="range" min="0" max="1" step="0.01" value={volume} aria-valuetext={`${Math.round(volume * 100)}%`} onChange={(e) => { changeVolume(Number(e.target.value)); revealVolume(); }} className="w-24 accent-emerald-500" />

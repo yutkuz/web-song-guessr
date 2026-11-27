@@ -50,6 +50,7 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
+  overflow-x: hidden;
   background-image:
     radial-gradient(circle at 50% -10%, rgba(99, 102, 241, .22), transparent 38rem),
     radial-gradient(circle at 95% 55%, rgba(16, 185, 129, .1), transparent 28rem),
@@ -234,6 +235,62 @@ input {
 .arcade-theme .float-in { animation-duration: .35s; }
 
 @media (max-width: 640px) {
+  .site-header-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: .5rem;
+  }
+
+  .site-brand {
+    position: static;
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+    transform: none;
+    gap: .4rem;
+  }
+
+  .site-brand-mark {
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: 0 0 auto;
+    border-radius: .55rem;
+    font-size: .95rem;
+  }
+
+  .site-brand-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: .9rem;
+  }
+
+  .site-header-actions {
+    grid-column: 2;
+    grid-row: 1;
+    flex: 0 0 auto;
+  }
+
+  .game-status-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: .75rem;
+  }
+
+  .game-status-row > :first-child,
+  .game-status-row > :nth-child(2) {
+    min-width: 0;
+  }
+
+  .game-volume {
+    grid-column: 1 / -1;
+    justify-self: end;
+  }
+
+  .game-secondary-actions {
+    grid-template-columns: 1fr;
+  }
+
   .arcade-theme header .design-switch { padding-inline: .6rem; }
   .arcade-theme .glass-panel { box-shadow: 5px 5px 0 rgba(2, 9, 15, .42); }
 }
