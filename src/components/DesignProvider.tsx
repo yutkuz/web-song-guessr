@@ -12,7 +12,7 @@ type DesignContextValue = {
 const DesignContext = createContext<DesignContextValue | null>(null);
 
 export function DesignProvider({ children }: { children: React.ReactNode }) {
-  const [designMode, setDesignMode] = useState<DesignMode>('classic');
+  const [designMode, setDesignMode] = useState<DesignMode>('spotify');
 
   const value = useMemo(() => ({
     designMode,
