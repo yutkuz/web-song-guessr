@@ -11,8 +11,12 @@ import { STAGE_DURATIONS } from '@/constants/game';
 export default function GamePage() {
   const gameState = useGameState('unlimited');
   const audio = useAudioPlayer();
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(0.5);
   const previewTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    audio.setVolume(0.5);
+  }, [audio.setVolume]);
 
   useEffect(() => {
     if (gameState.track?.previewUrl) audio.loadTrack(gameState.track.previewUrl);
@@ -42,7 +46,6 @@ export default function GamePage() {
     if (gameState.status === 'won' || gameState.status === 'lost') audio.stop();
   }, [gameState.status, audio.stop]);
 
-  const isActive = !gameState.roundComplete && (gameState.status === 'ready' || gameState.status === 'playing');
   const isOver = gameState.status === 'won' || gameState.status === 'lost';
   const changeVolume = (value: number) => { setVolume(value); audio.setVolume(value); };
 
@@ -57,8 +60,8 @@ export default function GamePage() {
         </div>
       )}
       {!gameState.isLoading && gameState.track && (
-        <div className="grid w-full max-w-6xl mx-auto gap-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
-        <div className="flex min-w-0 flex-col gap-6">
+        <div className="grid w-full max-w-[1080px] mx-auto gap-8 lg:grid-cols-[680px_360px] lg:justify-center lg:items-start">
+        <div className="flex w-full min-w-0 flex-col gap-6">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2" aria-label={`${3 - gameState.currentStageIndex} hak kaldı`}>
               <span className="text-xs text-neutral-400">Kalan hak:</span>
@@ -77,9 +80,9 @@ export default function GamePage() {
 
           <ProgressBar currentTime={audio.currentTime} duration={10} currentStageIndex={gameState.currentStageIndex} stageStart={stageStart} stageLimit={duration} isPlaying={audio.isPlaying} onSeek={audio.seek} />
 
-          {isActive && <div className="space-y-4 pt-2">
-            <SearchAutocomplete key={gameState.currentStageIndex} onSelect={gameState.selectTrack} placeholder="Şarkı veya sanatçı ara..." />
-            <GameControls isPlaying={audio.isPlaying} currentStageIndex={gameState.currentStageIndex} hasSelectedTrack={gameState.selectedTrack !== null} gameStatus={audio.isPlaying ? 'playing' : gameState.status} onPlay={() => audio.play(duration)} onStop={audio.stop} onSkip={() => { audio.stop(); gameState.skipStage(); }} onGuess={() => { audio.stop(); gameState.submitGuess(); }} />
+          {!isOver && <div className="space-y-4 pt-2">
+            <SearchAutocomplete key={gameState.currentStageIndex} disabled={gameState.roundComplete} onSelect={gameState.selectTrack} placeholder="Şarkı veya sanatçı ara..." />
+            <GameControls disabled={gameState.roundComplete} isPlaying={audio.isPlaying && !gameState.roundComplete} currentStageIndex={gameState.currentStageIndex} hasSelectedTrack={gameState.selectedTrack !== null} gameStatus={audio.isPlaying ? 'playing' : gameState.status} onPlay={() => audio.play(duration)} onStop={audio.stop} onSkip={() => { audio.stop(); gameState.skipStage(); }} onGuess={() => { audio.stop(); gameState.submitGuess(); }} />
           </div>}
 
           {isOver && <div className="rounded-2xl border border-emerald-500/40 bg-emerald-950/40 p-6 text-center space-y-4"><h2 className="text-xl font-bold text-emerald-300">Tebrikler, 5 şarkıyı tamamladın! 🎉</h2><button onClick={gameState.resetGame} className="w-full rounded-xl bg-emerald-500 py-3 font-semibold text-neutral-950">Yeni Oyun</button></div>}
