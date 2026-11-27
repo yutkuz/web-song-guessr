@@ -3,8 +3,8 @@ import Header from "@/components/Header";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Web Song Guessr — Şarkı Tahmin Oyunu",
-  description: "3 aşamada şarkıyı dinle ve tahmin et. Günlük ve sınırsız oyun modu.",
+  title: "Şarkıyı Tahmin Et",
+  description: "Türkçe şarkıları dinle ve tahmin et.",
 };
 
 export default function RootLayout({

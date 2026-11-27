@@ -1,5 +1,5 @@
-import { GamePage } from '@/app/page';
+import GamePage from '@/app/page';
 
 export default function UnlimitedGamePage() {
-  return <GamePage mode="unlimited" />;
+  return <GamePage />;
 }

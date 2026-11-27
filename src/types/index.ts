@@ -54,4 +54,5 @@ export interface AudioPlayerState {
   stop: () => void;
   loadTrack: (url: string) => void;
   playPreview: () => void;    // 30 saniyelik tam önizleme
+  setVolume: (volume: number) => void;
 }

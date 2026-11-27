@@ -41,6 +41,9 @@ const TURKISH_ARTISTS = new Set([
   'Kaan Boşnak', 'Can Bonomo', 'Manga', 'Pinhani', 'Yüzyüzeyken Konuşuruz',
   'Adamlar', 'Büyük Ev Ablukada', 'Kalben', 'Melek Mosso', 'Merve Özbey',
   'Tuğba Yurt', 'Zakkum', 'İlyas Yalçıntaş', 'Funda Arar', 'Feridun Düzağaç',
+  'Orhan Gencebay', 'Erol Evgin', 'Metin Özülkü', 'Selda Bağcan', 'Cem Karaca',
+  'Yonca Evcimik', 'MFÖ', 'Haluk Levent', 'Candan Erçetin', 'Kahtalı Mıçe',
+  'Emrah Karaduman', 'Aşık Veysel', 'Musa Eroğlu',
 ]);
 
 export async function GET(request: NextRequest) {

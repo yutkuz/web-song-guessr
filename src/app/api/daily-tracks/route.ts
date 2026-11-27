@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Track } from '@/types';
+import { SONG_CATALOG } from '@/constants/songs';
 
 export const dynamic = 'force-dynamic';
-
-const TURKISH_POP_PLAYLIST_URL =
-  'https://api.deezer.com/playlist/16011992503/tracks?limit=100';
 
 interface DeezerTrackItem {
   id: number;
@@ -15,73 +13,46 @@ interface DeezerTrackItem {
   album?: { title?: string; cover?: string; cover_medium?: string };
 }
 
-interface DeezerPlaylistResponse {
-  data?: DeezerTrackItem[];
-  error?: unknown;
-}
+interface DeezerSearchResponse { data?: DeezerTrackItem[]; error?: unknown; }
 
-function getTodayString(): string {
-  const date = new Date();
-  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
-}
+const normalize = (value: string) =>
+  value.toLocaleLowerCase('tr-TR').replace(/[’']/g, '').replace(/[^a-z0-9çğıöşü ]/gi, ' ').replace(/\s+/g, ' ').trim();
 
-function getDailySeed(value: string): number {
-  let hash = 2166136261;
-  for (const character of value) {
-    hash ^= character.charCodeAt(0);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function toTrack(item: DeezerTrackItem): Track | null {
-  if (!item.preview?.trim()) return null;
-  return {
-    id: item.id,
-    title: item.title_short || item.title,
-    artist: item.artist?.name || 'Bilinmeyen Sanatçı',
-    album: item.album?.title || '',
-    albumCover: item.album?.cover_medium || item.album?.cover || '',
-    previewUrl: item.preview,
-  };
-}
-
-async function fetchTurkishTracks(): Promise<Track[]> {
-  const response = await fetch(TURKISH_POP_PLAYLIST_URL, {
+async function resolveSong(title: string, artist: string): Promise<Track> {
+  const query = encodeURIComponent(`${title} ${artist}`);
+  const response = await fetch(`https://api.deezer.com/search?q=${query}&limit=10`, {
     headers: { Accept: 'application/json' },
-    next: { revalidate: 3600 },
+    cache: 'no-store',
     signal: AbortSignal.timeout(5000),
   });
-
   if (!response.ok) throw new Error(`Deezer HTTP ${response.status}`);
-  const data: DeezerPlaylistResponse = await response.json();
-  if (data.error || !Array.isArray(data.data)) {
-    throw new Error('Türkçe pop listesi geçersiz');
-  }
-
-  const tracks = data.data
-    .map(toTrack)
-    .filter((track): track is Track => track !== null);
-  if (tracks.length === 0) throw new Error('Türkçe pop listesinde çalınabilir parça yok');
-  return tracks;
+  const data: DeezerSearchResponse = await response.json();
+  const wantedTitle = normalize(title);
+  const wantedArtist = normalize(artist.split(' / ')[0].replace(' ft.', ''));
+  const match = (data.data ?? []).find((item) =>
+    item.preview && normalize(item.title).includes(wantedTitle) && normalize(item.artist?.name || '').includes(wantedArtist)
+  ) || (data.data ?? []).find((item) => item.preview);
+  if (!match?.preview) throw new Error('Şarkı önizlemesi bulunamadı');
+  return {
+    id: match.id,
+    title,
+    artist,
+    album: match.album?.title || '',
+    albumCover: match.album?.cover_medium || match.album?.cover || '',
+    previewUrl: match.preview,
+  };
 }
 
 export async function GET(request: NextRequest) {
   try {
-    const tracks = await fetchTurkishTracks();
-    const isRandom = request.nextUrl.searchParams.get('random') === 'true';
-    const index = isRandom
-      ? Math.floor(Math.random() * tracks.length)
-      : getDailySeed(getTodayString()) % tracks.length;
-
-    return NextResponse.json(tracks[index], {
-      headers: { 'Cache-Control': isRandom ? 'no-store' : 'public, max-age=300' },
+    const seed = Math.floor(Math.random() * SONG_CATALOG.length);
+    const requestedIndex = Number(request.nextUrl.searchParams.get('index'));
+    const item = SONG_CATALOG[Number.isInteger(requestedIndex) && requestedIndex >= 0 && requestedIndex < SONG_CATALOG.length ? requestedIndex : seed];
+    return NextResponse.json(await resolveSong(item.title, item.artist), {
+      headers: { 'Cache-Control': 'no-store' },
     });
   } catch (error) {
-    console.error('Türkçe şarkı listesi alınamadı:', error);
-    return NextResponse.json(
-      { error: 'Türkçe şarkı listesi şu anda alınamıyor. Lütfen tekrar deneyin.' },
-      { status: 502 }
-    );
+    console.error('Katalog şarkısı alınamadı:', error);
+    return NextResponse.json({ error: 'Şarkı şu anda yüklenemiyor. Lütfen tekrar deneyin.' }, { status: 502 });
   }
 }

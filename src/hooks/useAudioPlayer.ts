@@ -57,6 +57,7 @@ export function useAudioPlayer(
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(initialDuration);
+  const [volume, setVolumeState] = useState<number>(1);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const rafIdRef = useRef<number | null>(null);
@@ -74,6 +75,7 @@ export function useAudioPlayer(
     if (!audioRef.current) {
       const audio = new Audio();
       audio.preload = 'auto';
+      audio.volume = volume;
       audioRef.current = audio;
     }
     return audioRef.current;
@@ -201,6 +203,12 @@ export function useAudioPlayer(
     play(PREVIEW_DURATION);
   }, [play]);
 
+  const setVolume = useCallback((nextVolume: number) => {
+    const safeVolume = Math.min(1, Math.max(0, nextVolume));
+    setVolumeState(safeVolume);
+    if (audioRef.current) audioRef.current.volume = safeVolume;
+  }, []);
+
   // initialUrl varsa ilk yükleme
   useEffect(() => {
     if (initialUrl) {
@@ -244,6 +252,7 @@ export function useAudioPlayer(
     stop,
     loadTrack,
     playPreview,
+    setVolume,
   };
 }
 
