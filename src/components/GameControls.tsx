@@ -57,9 +57,7 @@ export function GameControls({
   const deltaSeconds = Math.max(0, nextDuration - currentDuration);
 
   // Buton etiketleri
-  const skipButtonLabel = isLastStage
-    ? 'Pas / Pes Et'
-    : `Atla (+${deltaSeconds}s)`;
+  const skipButtonLabel = 'Atla';
 
   // Tahmin Et butonu devre dışı mı?
   const isGuessDisabled = isControlsDisabled || !hasSelectedTrack;
