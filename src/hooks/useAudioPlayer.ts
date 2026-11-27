@@ -147,13 +147,9 @@ export function useAudioPlayer(
         setDuration(TOTAL_DURATION);
       }
 
-      // 0.0s Başlangıç Kuralı
-      try {
-        audio.currentTime = 0;
-      } catch {
-        // Audio hazır değilse yoksay
-      }
-      setCurrentTime(0);
+      // Kullanıcı çubuktan bir noktaya sardıysa oradan devam et.
+      if (audio.currentTime >= limit || audio.currentTime < 0) audio.currentTime = 0;
+      setCurrentTime(audio.currentTime);
 
       // requestAnimationFrame döngüsü
       const tick = () => {
@@ -163,12 +159,7 @@ export function useAudioPlayer(
         // Aşama süresi sınırına veya şarkı sonuna ulaşıldığında anında durdur
         if (a.currentTime >= targetLimitRef.current || a.ended) {
           a.pause();
-          try {
-            a.currentTime = 0;
-          } catch {
-            // Sessizce geç
-          }
-          setCurrentTime(0);
+          setCurrentTime(targetLimitRef.current);
           setIsPlaying(false);
           rafIdRef.current = null;
           return;
@@ -207,6 +198,14 @@ export function useAudioPlayer(
     const safeVolume = Math.min(1, Math.max(0, nextVolume));
     setVolumeState(safeVolume);
     if (audioRef.current) audioRef.current.volume = safeVolume;
+  }, []);
+
+  const seek = useCallback((time: number) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const safeTime = Math.min(TOTAL_DURATION, Math.max(0, time));
+    audio.currentTime = safeTime;
+    setCurrentTime(safeTime);
   }, []);
 
   // initialUrl varsa ilk yükleme
@@ -253,6 +252,7 @@ export function useAudioPlayer(
     loadTrack,
     playPreview,
     setVolume,
+    seek,
   };
 }
 

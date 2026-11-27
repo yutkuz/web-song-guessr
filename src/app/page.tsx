@@ -17,17 +17,24 @@ export default function GamePage() {
     if (gameState.track?.previewUrl) audio.loadTrack(gameState.track.previewUrl);
   }, [gameState.track?.previewUrl, audio.loadTrack]);
 
+  const stageStart = gameState.currentStageIndex === 0 ? 0 : STAGE_DURATIONS[gameState.currentStageIndex - 1];
+  const duration = STAGE_DURATIONS[gameState.currentStageIndex] ?? 10;
+
+  useEffect(() => {
+    audio.seek(stageStart);
+  }, [gameState.currentStageIndex, gameState.track?.id]);
+
   useEffect(() => {
     if (gameState.status === 'won' || gameState.status === 'lost') audio.stop();
   }, [gameState.status, audio.stop]);
 
   const isActive = gameState.status === 'ready' || gameState.status === 'playing';
   const isOver = gameState.status === 'won' || gameState.status === 'lost';
-  const duration = STAGE_DURATIONS[gameState.currentStageIndex] ?? 1;
   const changeVolume = (value: number) => { setVolume(value); audio.setVolume(value); };
 
   return (
-    <div className={`w-full flex-1 flex flex-col gap-6 py-4 select-none transition-colors duration-300 ${gameState.feedback === 'correct' ? 'bg-emerald-500/20' : gameState.feedback === 'wrong' ? 'bg-rose-500/20' : ''}`}>
+    <div className="relative w-full flex-1 flex flex-col gap-6 py-4 select-none">
+      {gameState.feedback && <div className={`fixed inset-0 z-50 pointer-events-none ${gameState.feedback === 'correct' ? 'bg-emerald-400/30' : 'bg-rose-400/30'} animate-pulse`} aria-hidden="true" />}
       {gameState.isLoading && <div className="flex-1 grid place-items-center text-neutral-400">Şarkı hazırlanıyor...</div>}
       {!gameState.isLoading && gameState.error && !gameState.track && (
         <div role="alert" className="m-auto text-center space-y-4">
@@ -53,7 +60,7 @@ export default function GamePage() {
             </label>
           </div>
 
-          <ProgressBar currentTime={audio.currentTime} duration={audio.duration} currentStageIndex={gameState.currentStageIndex} isPlaying={audio.isPlaying} />
+          <ProgressBar currentTime={audio.currentTime} duration={10} currentStageIndex={gameState.currentStageIndex} stageStart={stageStart} stageLimit={duration} isPlaying={audio.isPlaying} onSeek={audio.seek} />
 
           {isActive && <div className="space-y-4 pt-2">
             <SearchAutocomplete key={gameState.currentStageIndex} onSelect={gameState.selectTrack} placeholder="Şarkı veya sanatçı ara..." />
